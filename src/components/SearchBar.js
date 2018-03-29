@@ -3,6 +3,8 @@ import axios from 'axios';
 
 import { connect } from 'react-redux';
 import { setCurrentSearch } from '../actions/search';
+import { toast } from 'react-toastify';
+import { css } from 'glamor';
 
 
 export class SearchBar extends React.Component {
@@ -42,6 +44,7 @@ export class SearchBar extends React.Component {
         axios.post("/api/movies", id).then(response => {
             this.setState({ movies: response });
             console.log(response);
+            toast.info("The movie you searched is " + this.state.search)
         })
     }
 

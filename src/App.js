@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import SearchBar from './components/SearchBar'
+import SearchBar from './components/SearchBar';
+import { ToastContainer, style } from 'react-toastify';
+
+style({
+  colorInfo: "#25283D",
+  TOP_RIGHT: {
+    top: '5em',
+    right: '1em'
+  },
+});
 
 class App extends React.Component {
 
@@ -14,6 +23,7 @@ class App extends React.Component {
           <h1 className="App-title">Welcome to React Movie Finder</h1>
         </header>
         <SearchBar />
+        <ToastContainer autoClose={5000} />
       </div>
     );
   }
