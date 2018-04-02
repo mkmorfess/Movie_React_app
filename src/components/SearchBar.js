@@ -2,49 +2,59 @@ import React from 'react'
 import axios from 'axios';
 
 import { connect } from 'react-redux';
-import { setCurrentSearch } from '../actions/search';
+import { setCurrentSearch } from '../actions/user';
 import { toast } from 'react-toastify';
-import { css } from 'glamor';
+import Results from './Results.js';
 
 
 export class SearchBar extends React.Component {
-    state = {
-        movies: [],
-        search: ""
-    }
 
     onHandleQueryChange = (e) => {
 
         let newValue = e.target.value;
-        this.setState({ search: newValue });
+
+        let {
+            search,
+            movies
+        } = this.props.user
+
+        search = newValue;
+
+        let updateUser = {
+            search,
+            movies
+        }
+        this.props.setCurrentSearch(updateUser);
 
     }
 
     onHandleGetMovies = (e) => {
         e.preventDefault();
-        const {
-            search
-        } = this.props.search
-        console.log(this.props.search)
-        console.log(search);
-        console.log(this.state.search);
-
-        let id = {
-            movies: this.state.search
-        }
-
         
-        const updatedSearch = {
-            search
+        
+        let id = {
+            movies: this.props.user.search
         }
-        console.log(updatedSearch)
+        console.log("This is the movie: " + id.movies);
 
-        this.props.setCurrentSearch(this.state.search)
+        let {
+            search,
+            movies
+        } = this.props.user
 
         axios.post("/api/movies", id).then(response => {
-            this.setState({ movies: response });
-            console.log(response);
-            toast.info("The movie you searched is " + this.state.search)
+            movies = JSON.parse(response.data)
+
+            let updateUser = {
+                search,
+                movies
+            }
+
+            this.props.setCurrentSearch(updateUser);
+
+            if (this.props.user.movies.Title) {
+                toast.info("The movie you searched is " + this.props.user.movies.Title)
+            }
         })
     }
 
@@ -56,17 +66,24 @@ export class SearchBar extends React.Component {
                     <input name="search" onChange={this.onHandleQueryChange} />
                     <button onClick={this.onHandleFinish}>Search</button>
                 </form>
+                {this.props.user.movies.Title ?
+                <Results 
+                title={this.props.user.movies.Title}
+                director={this.props.user.movies.Director}
+                plot={this.props.user.movies.Plot}
+                year={this.props.user.movies.Year}
+                /> : <div></div> }
             </div>
         );
     }    
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    setCurrentSearch: (search) => dispatch(setCurrentSearch(search)),
+    setCurrentSearch: (user) => dispatch(setCurrentSearch(user)),
 })
 
 const mapStateToProps = (state) => ({
-    search: state.search
+    user: state.user
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);

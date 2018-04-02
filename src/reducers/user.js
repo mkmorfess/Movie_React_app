@@ -1,11 +1,12 @@
-const searchDefaultState = {
+const userDefaultState = {
+    movies: '',
     search: ''
 }
 
-export default (state = searchDefaultState, action) => {
+export default (state = userDefaultState, action) => {
     switch (action.type) {
         case 'SET_CURRENT_SEARCH':
-            return action.search
+            return action.user
         default:
             return state;
     }
